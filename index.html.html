@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Amazon · FY15–FY24</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800;900&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1"></script>
+<style>
+:root{--bg:#0a0f1a;--panel:#121a2a;--line:#1f2b40;--tx:#eef2f7;--mut:#8b98ad;--or:#ff9900;--tl:#2dd4bf}
+[data-theme=light]{--bg:#f3f5f9;--panel:#fff;--line:#dde3ec;--tx:#0f172a;--mut:#64748b}
+*{box-sizing:border-box;margin:0}
+body{font-family:Inter,sans-serif;background:var(--bg);color:var(--tx);display:flex;min-height:100vh}
+button,select{font:inherit;color:inherit;cursor:pointer}
+/* ---------- INTRO: parcel label ---------- */
+#intro{position:fixed;inset:0;z-index:99;background:#070b14;color:#fff;display:flex;align-items:center;justify-content:center;padding:20px;clip-path:circle(150% at 50% 50%);transition:clip-path .9s cubic-bezier(.7,0,.2,1)}
+#intro.hide{clip-path:circle(0 at 50% 50%);pointer-events:none}
+#cv{position:absolute;inset:0;width:100%;height:100%}
+.label{position:relative;width:min(560px,100%);background:#f7f3ea;color:#111;border-radius:6px;padding:22px 26px;box-shadow:0 30px 80px #000a;transform:rotate(-1.2deg)}
+.label .row{display:flex;justify-content:space-between;align-items:center;font-size:11px;font-weight:800;letter-spacing:1.5px;text-transform:uppercase}
+.label hr{border:0;border-top:3px solid #111;margin:12px 0}
+.label h1{font-size:clamp(30px,6vw,46px);font-weight:900;letter-spacing:-.04em;line-height:1}
+.label h1 em{font-style:normal;color:#e47911}
+.label p{font-size:13px;color:#444;margin:8px 0 14px}
+.steps{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+.step{border:2px solid #cfc8b8;border-radius:6px;padding:8px;opacity:.45;transition:.4s}
+.step.on{opacity:1;border-color:#111;background:#ffe2a8}
+.step b{display:block;font-size:10px;letter-spacing:1px}.step span{font-size:17px;font-weight:900}
+.track{height:8px;background:#ddd5c3;border-radius:9px;margin:14px 0 6px;overflow:hidden}
+.track i{display:block;height:100%;width:0;background:#111;transition:width .5s}
+.big{display:flex;justify-content:space-between;align-items:flex-end;font-size:12px;font-weight:700}
+.big strong{font-size:30px;font-weight:900}
+.bar{height:34px;margin:12px 0;background:repeating-linear-gradient(90deg,#111 0 2px,#0000 2px 5px,#111 5px 6px,#0000 6px 10px,#111 10px 13px,#0000 13px 15px)}
+#go{width:100%;padding:13px;border:0;border-radius:4px;background:#111;color:#ffb84d;font-weight:900;letter-spacing:2px;font-size:12px;text-transform:uppercase}
+#go:hover{background:#e47911;color:#111}
+/* ---------- SIDEBAR ---------- */
+aside{width:200px;flex:none;background:var(--panel);border-right:1px solid var(--line);padding:20px 14px;display:flex;flex-direction:column;gap:6px;position:sticky;top:0;height:100vh}
+.brand{font-weight:900;font-size:22px;letter-spacing:-.04em;padding:0 8px 16px}.brand b{color:var(--or)}
+.brand small{display:block;font-size:10px;font-weight:600;letter-spacing:1px;color:var(--mut);text-transform:uppercase}
+.nav,.tool{background:none;border:0;text-align:left;padding:10px 12px;border-radius:9px;font-size:13px;font-weight:600;color:var(--mut)}
+.nav:hover,.tool:hover{background:var(--line);color:var(--tx)}
+.nav.on{background:var(--or);color:#111;font-weight:800}
+.sp{flex:1}
+/* ---------- MAIN ---------- */
+main{flex:1;min-width:0;padding:22px 26px 40px}
+.top{display:flex;flex-wrap:wrap;gap:12px;align-items:center;justify-content:space-between;margin-bottom:18px}
+.top h2{font-size:22px;font-weight:900;letter-spacing:-.03em}.top p{font-size:12px;color:var(--mut);margin-top:2px}
+.chips{display:flex;flex-wrap:wrap;gap:5px}
+.chip{border:1px solid var(--line);background:var(--panel);padding:5px 10px;border-radius:99px;font-size:11px;font-weight:700;color:var(--mut)}
+.chip.on{background:var(--tl);border-color:var(--tl);color:#04211d}
+.kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:14px}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:16px}
+.kpi{border-top:3px solid var(--c)}
+.kpi span{font-size:10px;font-weight:800;letter-spacing:1.2px;text-transform:uppercase;color:var(--mut)}
+.kpi strong{display:block;font-size:26px;font-weight:900;margin-top:6px;letter-spacing:-.03em}
+.kpi small{font-size:11px;color:var(--c)}
+.grid{display:grid;grid-template-columns:repeat(12,1fr);gap:14px;margin-bottom:14px}
+.s7{grid-column:span 7}.s5{grid-column:span 5}.s6{grid-column:span 6}.s12{grid-column:span 12}
+.card h3{font-size:13px;font-weight:800}.card .sub{font-size:11px;color:var(--mut);margin:2px 0 10px}
+.ch{position:relative;height:260px}
+.hidden{display:none}
+table{width:100%;border-collapse:collapse;font-size:12px}
+th{text-align:left;font-size:10px;letter-spacing:1px;text-transform:uppercase;color:var(--mut);padding:9px 10px;border-bottom:1px solid var(--line)}
+td{padding:10px;border-bottom:1px solid var(--line)}
+tr.r{cursor:pointer}tr.r:hover{background:var(--line)}tr.sel{background:#ff990022;box-shadow:inset 3px 0 var(--or)}
+.wrap{overflow-x:auto}
+.cmp{display:flex;gap:10px;align-items:center;margin-bottom:14px}
+.cmp select{background:var(--panel);border:1px solid var(--line);padding:8px 12px;border-radius:9px;font-weight:700}
+@media(max-width:900px){body{flex-direction:column}aside{width:100%;height:auto;position:static;flex-direction:row;flex-wrap:wrap;align-items:center}.sp{display:none}.brand{padding:0 8px 0 0}.kpis{grid-template-columns:1fr 1fr}.s7,.s5,.s6{grid-column:span 12}main{padding:16px}}
+</style>
+</head>
+<body>
+
+<!-- INTRO -->
+<div id="intro">
+  <canvas id="cv"></canvas>
+  <div class="label">
+    <div class="row"><span style="display:flex;align-items:center;gap:8px"><svg class="logo"  style="height:26px;width:auto" viewBox="0 0 120 40" xmlns="http://www.w3.org/2000/svg" aria-label="amazon"><text x="2" y="24" font-family="Inter,Arial,sans-serif" font-weight="800" font-size="27" letter-spacing="-1.5" fill="currentColor">amazon</text><path d="M12 30 Q58 45 106 27" fill="none" stroke="#ff9900" stroke-width="3.6" stroke-linecap="round"/><path d="M99 24.5 L107.5 26.5 L103.5 34" fill="none" stroke="#ff9900" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"/></svg> priority</span><span id="trk">TRK AMZ-2015-2024</span></div>
+    <hr>
+    <h1>Ten years,<br>one <em>parcel.</em></h1>
+    <p>A decade of Amazon's 10-K numbers, packed, scanned and shipped straight to your screen.</p>
+    <div class="steps" id="steps"></div>
+    <div class="track"><i id="fill"></i></div>
+    <div class="big"><span id="stLbl">Awaiting pickup…</span><strong id="stVal">$0.0B</strong></div>
+    <div class="bar"></div>
+    <button id="go" onclick="closeIntro()">Unbox the dashboard →</button>
+  </div>
+</div>
+
+<!-- SIDEBAR -->
+<aside>
+  <div class="brand"><svg class="logo" style="height:34px;width:auto" viewBox="0 0 120 40" xmlns="http://www.w3.org/2000/svg" aria-label="amazon"><text x="2" y="24" font-family="Inter,Arial,sans-serif" font-weight="800" font-size="27" letter-spacing="-1.5" fill="currentColor">amazon</text><path d="M12 30 Q58 45 106 27" fill="none" stroke="#ff9900" stroke-width="3.6" stroke-linecap="round"/><path d="M99 24.5 L107.5 26.5 L103.5 34" fill="none" stroke="#ff9900" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"/></svg><small>FY15 – FY24</small></div>
+  <button class="nav on" id="nDash" onclick="view('dash')">▦ Dashboard</button>
+  <button class="nav" id="nCmp" onclick="view('cmp')">⇄ Compare years</button>
+  <div class="sp"></div>
+  <button class="tool" onclick="replay()">↻ Replay intro</button>
+  <button class="tool" id="snd" onclick="toggleSound()">🔊 Sound on</button>
+  <button class="tool" onclick="toggleTheme()">◐ Theme</button>
+  <button class="tool" onclick="exportCSV()">⇩ Export CSV</button>
+</aside>
+
+<main>
+  <!-- DASHBOARD -->
+  <section id="dash">
+    <div class="top">
+      <div><h2 id="ttl">All years · FY15–FY24</h2><p>Source: Amazon SEC Form 10-K filings · click a chip, bar, point or row to focus a year</p></div>
+      <div class="chips" id="chips"></div>
+    </div>
+    <div class="kpis">
+      <div class="card kpi" style="--c:#ff9900"><span>Net sales</span><strong id="k1"></strong><small id="k1s"></small></div>
+      <div class="card kpi" style="--c:#60a5fa"><span>AWS revenue</span><strong id="k2"></strong><small id="k2s"></small></div>
+      <div class="card kpi" style="--c:#a78bfa"><span>Headcount</span><strong id="k3"></strong><small id="k3s"></small></div>
+      <div class="card kpi" style="--c:#2dd4bf"><span>Sales / employee</span><strong id="k4"></strong><small id="k4s"></small></div>
+    </div>
+    <div class="grid">
+      <div class="card s7"><h3>Net sales trajectory</h3><p class="sub">$B per fiscal year</p><div class="ch"><canvas id="c1"></canvas></div></div>
+      <div class="card s5"><h3>YoY growth</h3><p class="sub">% change in net sales</p><div class="ch"><canvas id="c2"></canvas></div></div>
+      <div class="card s7"><h3>Revenue stack by segment</h3><p class="sub">How each business line built the total ($B)</p><div class="ch"><canvas id="c3"></canvas></div></div>
+      <div class="card s5"><h3>Segment mix</h3><p id="c4s" class="sub"></p><div class="ch"><canvas id="c4"></canvas></div></div>
+      <div class="card s6"><h3>Regional race</h3><p class="sub">North America vs International vs AWS ($B)</p><div class="ch"><canvas id="c5"></canvas></div></div>
+      <div class="card s6"><h3>Scale vs productivity</h3><p class="sub">Headcount (M) vs sales per employee ($K); bubble = net sales</p><div class="ch"><canvas id="c6"></canvas></div></div>
+    </div>
+    <div class="card"><h3>Financial records</h3><p class="sub">$ billions · click a row to focus that year</p>
+      <div class="wrap"><table><thead><tr><th>Year</th><th>Net sales</th><th>Growth</th><th>Online</th><th>3P</th><th>AWS</th><th>Ads</th><th>Headcount</th><th>Sales/emp</th></tr></thead><tbody id="tb"></tbody></table></div>
+    </div>
+  </section>
+
+  <!-- COMPARE -->
+  <section id="cmp" class="hidden">
+    <div class="top"><div><h2>Compare two fiscal years</h2><p>Benchmark segments, regions and workforce</p></div>
+      <div class="cmp"><select id="yA" onchange="drawCmp()"></select><b style="color:var(--or)">VS</b><select id="yB" onchange="drawCmp()"></select></div></div>
+    <div class="kpis" id="deltas"></div>
+    <div class="grid">
+      <div class="card s6"><h3>Segments</h3><p class="sub">Radar view ($B)</p><div class="ch"><canvas id="d1"></canvas></div></div>
+      <div class="card s6"><h3>Regions</h3><p class="sub">Horizontal bars ($B)</p><div class="ch"><canvas id="d2"></canvas></div></div>
+    </div>
+  </section>
+</main>
+
+<script>
+const D=[
+{year:"2015",fy:"FY15",revenue:107.0,growth:20.2,headcount:230800,onlineStores:76.9,thirdParty:16.1,aws:7.9,advertising:1.5,subscriptions:4.5,na:63.7,intl:35.4},
+{year:"2016",fy:"FY16",revenue:136.0,growth:27.1,headcount:341400,onlineStores:91.4,thirdParty:22.9,aws:12.2,advertising:2.9,subscriptions:6.4,na:79.8,intl:43.9},
+{year:"2017",fy:"FY17",revenue:177.9,growth:30.8,headcount:541900,onlineStores:104.2,thirdParty:31.9,aws:17.5,advertising:4.6,subscriptions:9.7,na:103.7,intl:56.7},
+{year:"2018",fy:"FY18",revenue:232.9,growth:30.9,headcount:647500,onlineStores:122.9,thirdParty:42.7,aws:25.7,advertising:10.1,subscriptions:14.2,na:141.4,intl:65.8},
+{year:"2019",fy:"FY19",revenue:280.5,growth:20.5,headcount:798000,onlineStores:141.2,thirdParty:53.8,aws:35.0,advertising:14.1,subscriptions:19.2,na:170.8,intl:74.7},
+{year:"2020",fy:"FY20",revenue:386.1,growth:37.6,headcount:1296000,onlineStores:197.4,thirdParty:80.5,aws:45.4,advertising:21.5,subscriptions:25.2,na:236.3,intl:104.4},
+{year:"2021",fy:"FY21",revenue:469.8,growth:21.7,headcount:1608000,onlineStores:222.1,thirdParty:103.2,aws:62.2,advertising:31.2,subscriptions:31.8,na:279.8,intl:127.8},
+{year:"2022",fy:"FY22",revenue:514.0,growth:9.4,headcount:1541000,onlineStores:220.0,thirdParty:117.7,aws:80.1,advertising:37.7,subscriptions:35.2,na:305.4,intl:128.5},
+{year:"2023",fy:"FY23",revenue:574.8,growth:11.8,headcount:1525000,onlineStores:235.6,thirdParty:140.1,aws:90.8,advertising:46.9,subscriptions:40.2,na:352.8,intl:131.2},
+{year:"2024",fy:"FY24",revenue:638.0,growth:11.0,headcount:1550000,onlineStores:247.0,thirdParty:156.2,aws:107.6,advertising:56.2,subscriptions:44.4,na:386.5,intl:143.9}];
+const $=i=>document.getElementById(i), sum=k=>D.reduce((a,d)=>a+d[k],0);
+const SEG=[['onlineStores','Online stores','#ff9900'],['thirdParty','3P seller','#2dd4bf'],['aws','AWS','#60a5fa'],['advertising','Advertising','#a78bfa'],['subscriptions','Subscriptions','#f472b6']];
+const eff=d=>d.revenue*1e6/d.headcount;
+let sel='ALL',snd=true,AC,charts={};
+
+/* ---- sound ---- */
+function beep(a=660,b=880){if(!snd)return;try{AC=AC||new(window.AudioContext||window.webkitAudioContext)();const t=AC.currentTime,o=AC.createOscillator(),g=AC.createGain();o.frequency.setValueAtTime(a,t);o.frequency.exponentialRampToValueAtTime(b,t+.15);g.gain.setValueAtTime(.1,t);g.gain.exponentialRampToValueAtTime(.001,t+.2);o.connect(g);g.connect(AC.destination);o.start(t);o.stop(t+.2)}catch(e){}}
+function toggleSound(){snd=!snd;$('snd').textContent=snd?'🔊 Sound on':'🔇 Sound off';beep()}
+
+/* ---- intro ---- */
+const MS=[['FY15',107.0],['FY18',232.9],['FY20',386.1],['FY24',638.0]];
+let raf,timers=[];
+function intro(){
+  const cv=$('cv'),x=cv.getContext('2d');let W,H;
+  const fit=()=>{W=cv.width=innerWidth;H=cv.height=innerHeight};fit();onresize=fit;
+  const P=Array.from({length:36},(_,i)=>({l:i%6,x:Math.random()*2000,s:.6+Math.random()*1.8,w:22+Math.random()*26}));
+  (function loop(){x.clearRect(0,0,W,H);
+    for(let l=0;l<6;l++){const y=H*(.1+l*.16);x.strokeStyle='#ffffff10';x.lineWidth=1;x.beginPath();x.moveTo(0,y+16);x.lineTo(W,y+16);x.stroke()}
+    P.forEach(p=>{p.x+=p.s;if(p.x>W+60)p.x=-60;const y=H*(.1+p.l*.16);x.fillStyle='#c98a3a';x.fillRect(p.x,y-p.w*.3,p.w,p.w*.6);x.fillStyle='#ffe2a866';x.fillRect(p.x+p.w*.4,y-p.w*.3,4,p.w*.6)});
+    raf=requestAnimationFrame(loop)})();
+  $('steps').innerHTML=MS.map(m=>`<div class="step"><b>${m[0]}</b><span>$${m[1]|0}B</span></div>`).join('');
+  $('fill').style.width='0';$('stVal').textContent='$0.0B';$('stLbl').textContent='Awaiting pickup…';
+  MS.forEach((m,i)=>timers.push(setTimeout(()=>{
+    document.querySelectorAll('.step')[i].classList.add('on');
+    $('fill').style.width=(i+1)*25+'%';$('stLbl').textContent=['Picked up','In transit','Out for delivery','Delivered'][i]+' · '+m[0];
+    const from=parseFloat($('stVal').textContent.slice(1))||0,t0=performance.now();
+    (function tick(n){const p=Math.min(1,(n-t0)/500);$('stVal').textContent='$'+(from+(m[1]-from)*p).toFixed(1)+'B';if(p<1)requestAnimationFrame(tick)})(t0);
+    beep(400+i*150,600+i*150);
+  },700+i*900)));
+}
+function closeIntro(){const e=$('intro');if(e.classList.contains('hide'))return;beep(520,1040);e.classList.add('hide');setTimeout(()=>{cancelAnimationFrame(raf);timers.forEach(clearTimeout);timers=[];e.style.display='none'},950)}
+function replay(){const e=$('intro');e.style.display='flex';void e.offsetWidth;e.classList.remove('hide');intro()}
+addEventListener('keydown',e=>{if(e.key==='Enter'||e.key==='Escape')closeIntro()});
+
+/* ---- helpers ---- */
+const css=v=>getComputedStyle(document.documentElement).getPropertyValue(v).trim();
+function themeCharts(){Chart.defaults.color=css('--mut');Chart.defaults.borderColor=css('--line');Chart.defaults.font.family='Inter';Chart.defaults.plugins.legend.labels.boxWidth=10}
+function mk(id,cfg){if(charts[id])charts[id].destroy();charts[id]=new Chart($(id),cfg)}
+const idx=()=>D.findIndex(d=>d.year===sel);
+const hi=(on,off)=>D.map((d,i)=>sel==='ALL'||i===idx()?on:off);
+const $B=v=>'$'+v+'B', fmt=(n,d=1)=>n.toLocaleString('en-US',{minimumFractionDigits:d,maximumFractionDigits:d});
+
+/* ---- build charts ---- */
+function build(){
+  themeCharts();const L=D.map(d=>d.fy);
+  const pick=(e,els)=>{if(els.length)setYear(D[els[0].index].year)};
+  mk('c1',{type:'line',data:{labels:L,datasets:[{label:'Net sales',data:D.map(d=>d.revenue),borderColor:'#ff9900',borderWidth:3,tension:.35,fill:true,backgroundColor:c=>{const g=c.chart.ctx.createLinearGradient(0,0,0,260);g.addColorStop(0,'#ff990066');g.addColorStop(1,'#ff990000');return g},pointRadius:hi(6,3),pointBackgroundColor:'#ff9900'}]},options:{maintainAspectRatio:false,onClick:pick,plugins:{legend:{display:false}},scales:{y:{ticks:{callback:$B}},x:{grid:{display:false}}}}});
+  mk('c2',{type:'bar',data:{labels:L,datasets:[{data:D.map(d=>d.growth),borderRadius:6,backgroundColor:hi('#2dd4bf','#2dd4bf44')}]},options:{maintainAspectRatio:false,onClick:pick,plugins:{legend:{display:false}},scales:{y:{ticks:{callback:v=>v+'%'}},x:{grid:{display:false}}}}});
+  mk('c3',{type:'bar',data:{labels:L,datasets:SEG.map(s=>({label:s[1],data:D.map(d=>d[s[0]]),backgroundColor:s[2]}))},options:{maintainAspectRatio:false,onClick:pick,scales:{x:{stacked:true,grid:{display:false}},y:{stacked:true,ticks:{callback:$B}}},plugins:{legend:{position:'bottom'}}}});
+  mk('c4',{type:'polarArea',data:{labels:SEG.map(s=>s[1]),datasets:[{data:mix(),backgroundColor:SEG.map(s=>s[2]+'cc'),borderWidth:0}]},options:{maintainAspectRatio:false,plugins:{legend:{position:'bottom'}},scales:{r:{ticks:{display:false},grid:{color:css('--line')}}}}});
+  mk('c5',{type:'line',data:{labels:L,datasets:[['North America',D.map(d=>d.na),'#ff9900'],['International',D.map(d=>d.intl),'#60a5fa'],['AWS',D.map(d=>d.aws),'#a78bfa']].map(a=>({label:a[0],data:a[1],borderColor:a[2],backgroundColor:a[2],tension:.3,borderWidth:2.5,pointRadius:3}))},options:{maintainAspectRatio:false,interaction:{mode:'index',intersect:false},plugins:{legend:{position:'bottom'}},scales:{y:{ticks:{callback:$B}},x:{grid:{display:false}}}}});
+  mk('c6',{type:'bubble',data:{datasets:[{label:'Fiscal year',data:D.map(d=>({x:+(d.headcount/1e6).toFixed(2),y:+eff(d).toFixed(1),r:d.revenue/40+4,fy:d.fy})),backgroundColor:hi('#2dd4bfcc','#2dd4bf44')}]},options:{maintainAspectRatio:false,onClick:pick,plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>`${c.raw.fy}: ${c.raw.x}M staff, $${c.raw.y}K/emp`}}},scales:{x:{title:{display:true,text:'Headcount (M)'}},y:{title:{display:true,text:'$K / employee'}}}}});
+}
+const mix=()=>sel==='ALL'?SEG.map(s=>+sum(s[0]).toFixed(1)):SEG.map(s=>D[idx()][s[0]]);
+
+/* ---- year focus ---- */
+function setYear(y){sel=y;beep();paint()}
+function paint(){
+  const a=sel==='ALL',d=D[a?9:idx()];
+  $('ttl').textContent=a?'All years · FY15–FY24':`${d.fy} snapshot · fiscal ${d.year}`;
+  $('k1').textContent=$B(fmt(a?sum('revenue'):d.revenue));$('k1s').textContent=a?'10-year cumulative · CAGR 21.9%':`+${d.growth}% vs prior year`;
+  $('k2').textContent=$B(fmt(a?sum('aws'):d.aws));$('k2s').textContent=`${fmt(((a?sum('aws')/sum('revenue'):d.aws/d.revenue))*100)}% of net sales`;
+  $('k3').textContent=fmt(d.headcount,0);$('k3s').textContent=a?'latest (FY24)':d.fy+' year-end';
+  $('k4').textContent='$'+fmt(eff(d))+'K';$('k4s').textContent=a?'latest (FY24)':d.fy;
+  $('c4s').textContent=a?'10-year aggregate ($B)':d.fy+' ($B)';
+  document.querySelectorAll('.chip').forEach(c=>c.classList.toggle('on',c.dataset.y===sel));
+  if(charts.c1){
+    charts.c1.data.datasets[0].pointRadius=hi(6,3);charts.c2.data.datasets[0].backgroundColor=hi('#2dd4bf','#2dd4bf44');
+    charts.c6.data.datasets[0].backgroundColor=hi('#2dd4bfcc','#2dd4bf44');charts.c4.data.datasets[0].data=mix();
+    ['c1','c2','c4','c6'].forEach(k=>charts[k].update())}
+  table();
+}
+function table(){
+  $('tb').innerHTML=[...D].reverse().map(d=>`<tr class="r ${sel===d.year?'sel':''}" onclick="setYear(sel==='${d.year}'?'ALL':'${d.year}')"><td><b>${d.fy}</b></td><td style="color:#ff9900;font-weight:800">$${fmt(d.revenue)}B</td><td>+${d.growth}%</td><td>$${fmt(d.onlineStores)}B</td><td>$${fmt(d.thirdParty)}B</td><td>$${fmt(d.aws)}B</td><td>$${fmt(d.advertising)}B</td><td>${fmt(d.headcount,0)}</td><td>$${fmt(eff(d))}K</td></tr>`).join('');
+}
+
+/* ---- views & compare ---- */
+function view(v){beep(300,500);$('dash').classList.toggle('hidden',v!=='dash');$('cmp').classList.toggle('hidden',v!=='cmp');$('nDash').classList.toggle('on',v==='dash');$('nCmp').classList.toggle('on',v==='cmp');if(v==='cmp')drawCmp()}
+function drawCmp(){
+  const a=D.find(d=>d.year===$('yA').value),b=D.find(d=>d.year===$('yB').value),sg=n=>(n>=0?'+':'')+n;
+  const cards=[['Sales Δ','#ff9900',`${sg(fmt(b.revenue-a.revenue))}B`,`${sg(fmt((b.revenue/a.revenue-1)*100))}%`],['AWS Δ','#60a5fa',`${sg(fmt(b.aws-a.aws))}B`,`${fmt(b.aws/a.aws)}× multiple`],['Headcount Δ','#a78bfa',sg(fmt(b.headcount-a.headcount,0)),`${fmt(b.headcount/a.headcount)}× multiple`],['Ads Δ','#f472b6',`${sg(fmt(b.advertising-a.advertising))}B`,`${fmt(b.advertising/a.advertising)}× multiple`]];
+  $('deltas').innerHTML=cards.map(c=>`<div class="card kpi" style="--c:${c[1]}"><span>${c[0]}</span><strong>${c[2]}</strong><small>${c[3]}</small></div>`).join('');
+  const col=['#64748b','#ff9900'];
+  mk('d1',{type:'radar',data:{labels:SEG.map(s=>s[1]),datasets:[a,b].map((y,i)=>({label:y.fy,data:SEG.map(s=>y[s[0]]),borderColor:col[i],backgroundColor:col[i]+'44',borderWidth:2}))},options:{maintainAspectRatio:false,scales:{r:{ticks:{display:false}}}}});
+  mk('d2',{type:'bar',data:{labels:['North America','International','AWS'],datasets:[a,b].map((y,i)=>({label:y.fy,data:[y.na,y.intl,y.aws],backgroundColor:col[i],borderRadius:5}))},options:{indexAxis:'y',maintainAspectRatio:false,scales:{x:{ticks:{callback:$B}}}}});
+}
+
+/* ---- misc ---- */
+function toggleTheme(){const h=document.documentElement;h.dataset.theme=h.dataset.theme==='dark'?'light':'dark';beep(500,300);build();if(!$('cmp').classList.contains('hidden'))drawCmp()}
+function exportCSV(){const h=['Year','Revenue','Growth','Headcount','OnlineStores','ThirdParty','AWS','Advertising','Subscriptions'];
+  const csv=[h.join(','),...D.map(d=>[d.fy,d.revenue,d.growth,d.headcount,d.onlineStores,d.thirdParty,d.aws,d.advertising,d.subscriptions].join(','))].join('\n');
+  const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([csv],{type:'text/csv'}));a.download='Amazon_FY15_FY24.csv';a.click()}
+
+addEventListener('DOMContentLoaded',()=>{
+  $('chips').innerHTML=`<button class="chip on" data-y="ALL" onclick="setYear('ALL')">All</button>`+D.map(d=>`<button class="chip" data-y="${d.year}" onclick="setYear('${d.year}')">${d.fy}</button>`).join('');
+  const o=D.map(d=>`<option value="${d.year}">${d.fy} · $${d.revenue}B</option>`).join('');
+  $('yA').innerHTML=o;$('yB').innerHTML=o;$('yA').value='2015';$('yB').value='2024';
+  intro();build();paint();
+});
+</script>
+</body>
+</html>
